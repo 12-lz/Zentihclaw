@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Zenithclaw - 一键搭建与深度定制</title>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--bg-color: #000000;
+			--text-color: #ffffff;
+			--accent-gradient: linear-gradient(90deg, #4285F4, #9B72CB, #D96570, #F4AF5F);
+			--transition-speed: 1.1s;
+			--bezier: cubic-bezier(0.23, 1, 0.32, 1);
+			--nav-height: 80px;
+		}
+		html { scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-y: overlay; scroll-padding-top: 0; }
+		* { margin: 0; padding: 0; box-sizing: border-box; }
+		body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+		/* 背景 */
+		.gradient-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: radial-gradient(circle at 50% 50%, #1a1a40 0%, #000 70%); z-index: -1; }
+		.blob { position: absolute; width: 800px; height: 800px; background: var(--accent-gradient); border-radius: 50%; filter: blur(120px); opacity: 0.25; transition: transform 1.8s var(--bezier); left: 0; top: 50%; margin-left: -400px; margin-top: -400px; pointer-events: none; }
+
+		/* 导航 */
+		nav { position: fixed; top: 0; width: 100%; height: var(--nav-height); padding: 0 5%; display: flex; justify-content: space-between; align-items: center; z-index: 100; backdrop-filter: none; border-bottom: 1px solid rgba(255,255,255,0.03); background: transparent; }
+		.logo { display: flex; align-items: center; gap: 16px; font-weight: 700; font-size: 2rem; letter-spacing: 2px; cursor: pointer; }
+		.logo img { height: 70px; width: auto; object-fit: contain; }
+		.contact-btn { margin-left: 20px; padding: 8px 20px; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; background: rgba(255,255,255,0.05); color: #fff; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; text-decoration: none; }
+		.contact-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.5); transform: translateY(-1px); }
+		.menu { display: flex; gap: 2rem; }
+		.menu-item { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; font-weight: 500; cursor: pointer; position: relative; padding: 0.5rem 0; transition: color 0.3s ease; }
+		.menu-item:hover, .menu-item.active { color: #fff; }
+		.menu-item.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--accent-gradient); }
+
+		.nav-indicators { position: fixed; right: 32px; top: 50%; transform: translateY(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 16px; }
+		.nav-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s ease; }
+		.nav-dot.active { background: #fff; border-color: #fff; transform: scale(1.4); }
+
+		section { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: var(--nav-height) 5% 0 5%; scroll-snap-align: start; scroll-snap-stop: always; perspective: 1200px; overflow: hidden; position: relative; z-index: 1; }
+		section:not(.visible) { transform: scale(0.85) translateY(80px) rotateX(8deg); filter: blur(5px) brightness(0.5); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+		section.visible { transform: scale(1) translateY(0) rotateX(0deg); filter: blur(0px) brightness(1); z-index: 10; transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+
+		/* 第一部分首页 */
+		.hero-title { font-size: clamp(3rem, 10vw, 7rem); font-weight: 500; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+		.sub-text { font-size: 1.8rem; color: #aaa; margin-bottom: 0.5rem; }
+		.sub-text-small { font-size: 1rem; color: #888; max-width: 850px; margin-top: 15px; line-height: 1.6; }
+
+		/* 消息渠道滚动条样式 */
+		.channels-wrapper { margin-top: 60px; width: 100%; max-width: 800px; position: relative; overflow: hidden; }
+		.channels-label { font-size: 0.75rem; color: #555; margin-bottom: 12px; letter-spacing: 2px; text-transform: uppercase; }
+		.channels-marquee { display: flex; width: 100%; overflow: hidden; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+		.channels-track { display: flex; gap: 15px; animation: scrollChannels 25s linear infinite; }
+		.channel-chip { padding: 6px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; font-size: 0.8rem; color: #999; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+		.chip-status { font-size: 0.6rem; opacity: 0.5; }
+		@keyframes scrollChannels { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+		/* 第二部分 */
+		.demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; max-width: 1100px; margin-top: 1.5rem; }
+		.mac-window { background: rgba(20, 20, 20, 0.8); border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; height: 380px; overflow: hidden; text-align: left; }
+		.mac-titlebar { background: rgba(255,255,255,0.05); padding: 12px 16px; display: flex; align-items: center; gap: 8px; }
+		.dot { width: 12px; height: 12px; border-radius: 50%; }
+		.dot-red { background: #ff5f56; } .dot-yellow { background: #ffbd2e; } .dot-green { background: #27c93f; }
+		.mac-content { padding: 25px; flex: 1; position: relative; }
+		.segmented-progress { display: flex; gap: 8px; padding: 0 25px 20px 25px; }
+		.progress-segment { height: 4px; flex: 1; background: rgba(255,255,255,0.1); border-radius: 2px; position: relative; }
+		.segment-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0; transition: width 0.5s ease; }
+		.setup-active .segment-fill { background: #4285F4; width: 100%; }
+		.usage-active .segment-fill { background: #27c93f; width: 100%; }
+		.auto-step { display: none; animation: fadeIn 0.5s ease; }
+		.auto-step.active { display: block; }
+
+		/* 第三部分 */
+		.features-container { position: relative; width: 100%; max-width: 1100px; height: 700px; display: flex; justify-content: center; align-items: center; margin: 0 auto; padding-top: 80px; }
+		.features-center { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); text-align: center; }
+		.features-center h2 { font-size: 2.5rem; font-weight: 700; color: #fff; margin: 0; }
+		.features-center p { font-size: 1rem; color: #888; margin-top: 8px; }
+
+		/* 六边形外圈卡片wrapper - 静态分布，无旋转 */
+		.hexagon-ring { position: absolute; top: 62%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 600px; }
+		.feature-card-wrapper { position: absolute; }
+		.feature-card { position: relative; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 1.3rem 1.1rem; text-align: left; width: 210px; opacity: 0; transform: scale(0); transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); cursor: pointer; }
+		.feature-card:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255,255,255,0.2); transform: scale(1.05); z-index: 100; }
+		.feature-card.animate { opacity: 1; transform: scale(1); }
+		.feature-icon { font-size: 1.4rem; margin-bottom: 0.7rem; display: block; }
+		.feature-card h3 { font-size: 0.9rem; margin-bottom: 0.5rem; color: #fff; }
+		.feature-card p { font-size: 0.68rem; color: #777; line-height: 1.3; }
+
+		/* 中间专属卡片 */
+		.feature-card.center-card { position: absolute; top: 62%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 260px; padding: 1.7rem; background: rgba(66, 133, 244, 0.08); border: 1px solid rgba(66, 133, 244, 0.2); border-radius: 12px; z-index: 50; opacity: 0; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); animation: none !important; }
+		.feature-card.center-card.animate { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+		.feature-card.center-card:hover { background: rgba(66, 133, 244, 0.15); border-color: rgba(66, 133, 244, 0.4); }
+		.feature-card.center-card h3 { font-size: 1.15rem; }
+		.feature-card.center-card p { font-size: 0.78rem; color: #aaa; }
+
+		/* 旋转动画 */
+		@keyframes rotateRing {
+			0% { transform: translate(-50%, -50%) rotate(0deg); }
+			100% { transform: translate(-50%, -50%) rotate(360deg); }
+		}
+
+		/* 保持卡片水平 - 反向旋转 */
+		@keyframes keepUpright {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(-360deg); }
+		}
+
+		/* 第四部分 3D 卡片 - 样式保持 */
+		.custom-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; max-width: 1200px; margin-top: 2rem; }
+		.card { background-color: transparent; width: 100%; height: 240px; perspective: 1000px; cursor: pointer; }
+		.card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s var(--bezier); transform-style: preserve-3d; }
+		.card:hover .card-inner { transform: rotateY(180deg); }
+		.card-front, .card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; border: 1px solid rgba(255, 255, 255, 0.1); }
+		.card-front { background: rgba(255, 255, 255, 0.05); color: white; backdrop-filter: blur(5px); }
+		.card-front p { font-weight: 700; font-size: 1.2rem; letter-spacing: 1.5px; }
+		.card-front::after { content: ''; position: absolute; bottom: 0; width: 40px; height: 2px; background: var(--accent-gradient); }
+		.card-back { background: rgba(255, 255, 255, 0.12); color: #ddd; transform: rotateY(180deg); backdrop-filter: blur(10px); text-align: left; overflow: hidden; }
+		.card-back p { font-size: 0.7rem; line-height: 1.5; color: rgba(255,255,255,0.85); }
+
+		/* 弹窗样式 */
+		.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 10000; display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
+		.modal-overlay.show { display: flex; opacity: 1; }
+		.modal-content { background: #1a1a1a; border-radius: 20px; padding: 40px; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: scale(0.9) translateY(20px); transition: transform 0.3s ease; }
+		.modal-overlay.show .modal-content { transform: scale(1) translateY(0); }
+		.modal-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+		.modal-subtitle { font-size: 0.9rem; color: #888; margin-bottom: 25px; }
+		.qrcode-container { background: #fff; padding: 15px; border-radius: 12px; display: inline-block; margin-bottom: 20px; }
+		.qrcode-container img { width: 200px; height: 200px; object-fit: contain; display: block; }
+		.modal-close { padding: 10px 30px; border: none; border-radius: 25px; background: var(--accent-gradient); color: #fff; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+		.modal-close:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(66, 133, 244, 0.3); }
+
+		@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+	</style>
+</head>
+<body>
+	<div class="gradient-bg"> <div class="blob" id="bgBlob"></div> </div>
+
+	<!-- 弹窗 -->
+	<div class="modal-overlay" id="contactModal">
+		<div class="modal-content">
+			<h3 class="modal-title">联系我们</h3>
+			<p class="modal-subtitle">扫描二维码，开启智能自动化之旅</p>
+			<div class="qrcode-container">
+				<img src="qrcode_inverted.jpg" alt="微信二维码">
+			</div>
+			<button class="modal-close" onclick="closeModal()">关闭</button>
+		</div>
+	</div>
+
+	<nav>
+		<div class="logo" onclick="scrollToIndex(0)">
+			<img src="logo.png" alt="Zenithclaw Logo">
+			<span>ZENITHCLAW</span>
+			<button class="contact-btn" onclick="openModal()">联系我们</button>
+		</div>
+		<div class="menu">
+			<a class="menu-item active" onclick="scrollToIndex(0)">你好Zenithclaw</a>
+			<a class="menu-item" onclick="scrollToIndex(1)">一键搭建</a>
+			<a class="menu-item" onclick="scrollToIndex(2)">能力全开</a>
+			<a class="menu-item" onclick="scrollToIndex(3)">深度定制</a>
+			<a class="menu-item" onclick="scrollToIndex(4)">极速下载</a>
+		</div>
+	</nav>
+
+	<div class="nav-indicators">
+		<div class="nav-dot active" onclick="scrollToIndex(0)"></div>
+		<div class="nav-dot" onclick="scrollToIndex(1)"></div>
+		<div class="nav-dot" onclick="scrollToIndex(2)"></div>
+		<div class="nav-dot" onclick="scrollToIndex(3)"></div>
+		<div class="nav-dot" onclick="scrollToIndex(4)"></div>
+	</div>
+
+	<section id="hero" class="visible">
+		<h1 class="hero-title">Zenithclaw</h1>
+		<p class="sub-text">一键搭建 · 深度定制 · 高效落地</p>
+		<p class="sub-text-small">专注于Openclaw极速搭建与专属Skill定制，让个性化需求精准实现，从构想到部署无缝衔接</p>
+
+		<div class="channels-wrapper">
+			<div class="channels-label">支持的消息渠道</div>
+			<div class="channels-marquee">
+				<div class="channels-track">
+					<div class="channel-chip">飞书 <span class="chip-status">✓</span></div>
+					<div class="channel-chip">WhatsApp <span class="chip-status">✓</span></div>
+					<div class="channel-chip">Telegram <span class="chip-status">✓</span></div>
+					<div class="channel-chip">Discord <span class="chip-status">✓</span></div>
+					<div class="channel-chip">Slack <span class="chip-status">✓</span></div>
+					<div class="channel-chip">Signal <span class="chip-status">✓</span></div>
+					<div class="channel-chip">iMessage <span class="chip-status">✓</span></div>
+					<div class="channel-chip">Mattermost <span class="chip-status">✓</span></div>
+					<div class="channel-chip" style="opacity:0.5; border-style:dashed;">钉钉 (即将)</div>
+					<div class="channel-chip" style="opacity:0.5; border-style:dashed;">企业微信 (即将)</div>
+					<div class="channel-chip">飞书 <span class="chip-status">✓</span></div>
+					<div class="channel-chip">WhatsApp <span class="chip-status">✓</span></div>
+					<div class="channel-chip">Telegram <span class="chip-status">✓</span></div>
+					<div class="channel-chip">Discord <span class="chip-status">✓</span></div>
+					<div class="channel-chip">Slack <span class="chip-status">✓</span></div>
+					<div class="channel-chip">Signal <span class="chip-status">✓</span></div>
+					<div class="channel-chip">iMessage <span class="chip-status">✓</span></div>
+					<div class="channel-chip">Mattermost <span class="chip-status">✓</span></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="intro">
+		<h2 style="font-size: 2.2rem; margin-bottom: 0.5rem;">一键配置 · 自动操作</h2>
+		<div class="demo-grid">
+			<div class="mac-window" id="win-setup">
+				<div class="mac-titlebar">
+					<div style="display:flex; gap:6px;"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+					<span class="mac-title" style="margin-left:10px; font-size:0.75rem; opacity:0.5;">Auto-Config</span>
+				</div>
+				<div class="mac-content">
+					<div class="auto-step active"><h3>环境初始化...</h3><p style="color:#666;margin-top:10px;">正在检查依赖库与 Python 环境</p></div>
+					<div class="auto-step"><h3>API 密钥注入</h3><div style="background:#111;padding:10px;margin-top:10px;border-radius:5px;font-family:monospace;color:#4285F4;">sk-ant-••••••••</div></div>
+					<div class="auto-step"><h3>部署成功 ✓</h3><p style="color:#888;margin-top:10px;">Zenithclaw 节点已准备就绪</p></div>
+				</div>
+				<div class="segmented-progress">
+					<div class="progress-segment"><div class="segment-fill"></div></div>
+					<div class="progress-segment"><div class="segment-fill"></div></div>
+					<div class="progress-segment"><div class="segment-fill"></div></div>
+				</div>
+			</div>
+			<div class="mac-window" id="win-usage">
+				<div class="mac-titlebar">
+					<div style="display:flex; gap:6px;"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span></div>
+					<span class="mac-title" style="margin-left:10px; font-size:0.75rem; opacity:0.5;">Auto-Agent</span>
+				</div>
+				<div class="mac-content">
+					<div class="auto-step active"><div style="background:#333; padding:10px; border-radius:12px; font-size:0.8rem; width:fit-content; margin-left:auto;">帮我抓取小红书笔记</div></div>
+					<div class="auto-step"><div style="background:var(--accent-gradient); color:white; padding:10px; border-radius:12px; font-size:0.8rem;">正在执行自动化脚本...</div></div>
+					<div class="auto-step"><div style="text-align:center;color:#27c93f; font-weight:bold;">📄 Data_Exported.xlsx</div></div>
+				</div>
+				<div class="segmented-progress">
+					<div class="progress-segment"><div class="segment-fill"></div></div>
+					<div class="progress-segment"><div class="segment-fill"></div></div>
+					<div class="progress-segment"><div class="segment-fill"></div></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="features">
+		<div class="features-container">
+			<div class="features-center">
+				<h2>能力全开</h2>
+				<p>OpenClaw 的全部能力，加上零门槛的桌面体验</p>
+			</div>
+			<div class="hexagon-ring">
+				<div class="feature-card-wrapper" style="top: -45px; left: 50%; transform: translateX(-50%);">
+					<div class="feature-card"><span class="feature-icon">📦</span><h3>一键安装</h3><p>DMG 或 EXE 双击即用，告别命令行、Node.js、Git 等繁琐依赖安装。</p></div>
+				</div>
+				<div class="feature-card-wrapper" style="top: 75px; right: -75px;">
+					<div class="feature-card"><span class="feature-icon">🧠</span><h3>5 大 AI 模型</h3><p>内置 Anthropic、Moonshot、OpenAI、Google 及自定义 OpenAI 兼容 API。</p></div>
+				</div>
+				<div class="feature-card-wrapper" style="bottom: 75px; right: -75px;">
+					<div class="feature-card"><span class="feature-icon">⚡</span><h3>内嵌运行时</h3><p>自带 Node.js 22 运行环境，无需额外安装任何开发工具。</p></div>
+				</div>
+				<div class="feature-card-wrapper" style="bottom: -45px; left: 50%; transform: translateX(-50%);">
+					<div class="feature-card"><span class="feature-icon">🌐</span><h3>浏览器自动化</h3><p>AI 自动操控浏览器，抓取数据、填写表单、完成复杂的网页操作。</p></div>
+				</div>
+				<div class="feature-card-wrapper" style="bottom: 75px; left: -75px;">
+					<div class="feature-card"><span class="feature-icon">🖥️</span><h3>跨平台支持</h3><p>macOS 和 Windows 双平台，支持 arm64 与 x64 架构。</p></div>
+				</div>
+				<div class="feature-card-wrapper" style="top: 75px; left: -75px;">
+					<div class="feature-card"><span class="feature-icon">🇨🇳</span><h3>网络优化</h3><p>预置加速镜像源，无需特殊网络环境即可顺畅完成组件安装和使用。</p></div>
+				</div>
+			</div>
+			<div class="feature-card center-card"><span class="feature-icon">⚙️</span><h3>专属Skill定制</h3><p>直击痛点，专属定制满足客户个性化需求。</p></div>
+		</div>
+	</section>
+
+	<section id="custom">
+		<h2 style="font-size: 2.2rem; margin-bottom: 0.5rem;">行业深度定制服务</h2>
+		<div class="custom-grid">
+			<div class="card">
+				<div class="card-inner">
+					<div class="card-front"><p>电商领域</p></div>
+					<div class="card-back"><p>深度赋能跨境电商卖家，自主分析市场数据、拆解爆款视频逻辑，辅助选品策略与内容生产，整合多方数据源，高效完成市场调研、竞品价格对比及利润ROI测算。</p></div>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card-inner">
+					<div class="card-front"><p>传统制造业</p></div>
+					<div class="card-back"><p>推动"智能制造+AI"落地，通过本地化、安全隔离的部署方案，将自然语言指令转化为电脑实际操作，可执行会议纪要整理、数据归档等流程自动化工作，以极低门槛为企业提供"数字员工"，助力工厂实现高效运营与管理智能化升级。</p></div>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card-inner">
+					<div class="card-front"><p>医疗领域</p></div>
+					<div class="card-back"><p>通过本地私有化部署和"只读"数据接口，它能安全地连接电子病历等核心系统，辅助医生完成病历预填、体检报告自动生成、医学知识检索等重复性工作，有效将医护人员从繁琐文书劳动中解放出来，推动医疗大模型从"能对话"向"能执行"的临床实用化转变。</p></div>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card-inner">
+					<div class="card-front"><p>金融证券</p></div>
+					<div class="card-back"><p>重塑投研工作流，成为分析师的"效率杠杆",自主完成每日公告抓取与结构化汇总、构建选股策略并进行回测，根据指令撰写数据分析报告,将投研人员从海量信息处理的"体力活"中解放出来，使其更专注于策略创新与价值判断。</p></div>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card-inner">
+					<div class="card-front"><p>有色与工业</p></div>
+					<div class="card-back"><p>展现出强大的物理交互与边缘计算能力，搭载该系统的无人机或机器人可在复杂环境中识别矿藏，冶炼环节，可实时监控并优化数以千计的传感器参数，提升冶炼精度与安全性，推动传统工业从"经验驱动"向"数据与智能驱动"的范式变革。</p></div>
+				</div>
+			</div>
+			<div class="card">
+				<div class="card-inner">
+					<div class="card-front"><p>短视频领域</p></div>
+					<div class="card-back"><p>全流程自动化生产，爆款内容的工程与复刻，创意资源的智能集成与调度，打造无人值守的"内容工厂，实现内容的规模化、常态化产出。</p></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section id="download">
+		<h2 style="font-size: 2.8rem; margin-bottom: 2rem;">开启智能自动化之旅</h2>
+		<div style="display: flex; gap: 20px;">
+			<button style="padding: 16px 40px; border-radius: 30px; border: none; background: #fff; color: #000; font-weight: 700; cursor: pointer;">Download for macOS</button>
+			<button style="padding: 16px 40px; border-radius: 30px; border: 1px solid #fff; background: transparent; color: #fff; font-weight: 700; cursor: pointer;">Download for Windows</button>
+		</div>
+	</section>
+
+	<script>
+		const sections = document.querySelectorAll('section');
+		const navDots = document.querySelectorAll('.nav-dot');
+		const menuItems = document.querySelectorAll('.menu-item');
+		const blob = document.getElementById('bgBlob');
+
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				const index = Array.from(sections).indexOf(entry.target);
+				if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+					entry.target.classList.add('visible');
+					navDots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+					menuItems.forEach((item, i) => item.classList.toggle('active', i === index));
+					moveBlob(index);
+				}
+			});
+		}, { threshold: [0, 0.5], rootMargin: '0px' });
+		sections.forEach(s => observer.observe(s));
+
+		// 滚动时实时计算可见性并触发动画
+		let ticking = false;
+		window.addEventListener('scroll', () => {
+			if (!ticking) {
+				window.requestAnimationFrame(() => {
+					let currentSection = 0;
+					let maxVisibility = 0;
+
+					sections.forEach((section, index) => {
