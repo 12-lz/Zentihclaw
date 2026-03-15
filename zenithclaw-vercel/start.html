@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenithclaw - 部署前测试</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f0f0f0;
+        }
+        .status.ready {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        .files {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .file-item {
+            padding: 8px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .file-item.ok {
+            color: #28a745;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            margin: 10px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .steps {
+            text-align: left;
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .steps h3 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .steps ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Zenithclaw 部署准备完成</h1>
+
+        <div class="status ready">
+            <strong>所有文件已就绪！</strong><br>
+            项目位置：<code>D:\zenithclaw-vercel\</code>
+        </div>
+
+        <div class="files">
+            <h3>📁 文件清单：</h3>
+            <div class="file-item ok">✓ index.html (27.9 KB)</div>
+            <div class="file-item ok">✓ logo.png (252 KB)</div>
+            <div class="file-item ok">✓ qrcode_inverted.jpg (152 KB)</div>
+            <div class="file-item ok">✓ vercel.json (配置文件)</div>
+        </div>
+
+        <div class="steps">
+            <h3>🚀 部署步骤（选择一种）：</h3>
+
+            <strong>方法一：网页部署（推荐，最简单）</strong>
+            <ol>
+                <li>访问 <a href="https://vercel.com" target="_blank">https://vercel.com</a></li>
+                <li>注册/登录免费账号</li>
+                <li>点击 "Add New" → "Project"</li>
+                <li>拖拽 <code>D:\zenithclaw-vercel</code> 文件夹到浏览器</li>
+                <li>点击 "Deploy" 按钮</li>
+                <li>等待 2-3 分钟，完成！</li>
+            </ol>
+
+            <strong>方法二：命令行部署</strong>
+            <ol>
+                <li>打开 PowerShell（管理员模式）</li>
+                <li>运行：<code>npm install -g vercel</code></li>
+                <li>进入目录：<code>cd D:\zenithclaw-vercel</code></li>
+                <li>登录：<code>vercel login</code></li>
+                <li>部署：<code>vercel --prod</code></li>
+            </ol>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="index.html" class="btn" target="_blank">👀 预览网页</a>
+            <a href="https://vercel.com" target="_blank" class="btn">🚀 去部署</a>
+        </div>
+
+        <p style="text-align: center; color: #666; margin-top: 30px;">
+            预计部署时间：3-5 分钟<br>
+            部署后获得：https://your-project.vercel.app
+        </p>
+    </div>
+</body>
+</html>

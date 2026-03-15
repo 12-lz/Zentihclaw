@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vercel 上传指南 - Zenithclaw</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .step {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+        .step h2 {
+            display: inline;
+            color: #333;
+            font-size: 24px;
+        }
+        .step-content {
+            margin-top: 20px;
+            line-height: 1.8;
+            color: #555;
+        }
+        .step-content ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        .step-content li {
+            margin: 10px 0;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            margin: 15px 0;
+        }
+        .warning {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+            margin: 15px 0;
+        }
+        .file-list {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .file-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .file-name { font-weight: bold; }
+        .file-size { color: #666; }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            margin: 10px 5px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-large {
+            font-size: 18px;
+            padding: 20px 40px;
+        }
+        .folder-path {
+            background: #2d2d2d;
+            color: #4285F4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            text-align: center;
+            margin: 15px 0;
+        }
+        .arrow {
+            text-align: center;
+            font-size: 40px;
+            color: #667eea;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📤 Vercel 上传完整指南</h1>
+        <p class="subtitle">将 Zenithclaw 网站部署到 Vercel 的详细步骤</p>
+
+        <div class="success">
+            <strong>✅ 所有文件已准备好！</strong><br>
+            文件夹位置：<code>D:\zenithclaw-vercel\</code>
+        </div>
+
+        <!-- 步骤 1 -->
+        <div class="step">
+            <span class="step-number">1</span>
+            <h2>登录 Vercel</h2>
+            <div class="step-content">
+                <ol>
+                    <li>打开浏览器，访问：<a href="https://vercel.com" target="_blank" style="color: #667eea;">https://vercel.com</a></li>
+                    <li>点击右上角的 <strong>"Login"</strong> 或 <strong>"Sign Up"</strong></li>
+                    <li>选择登录方式（推荐使用 GitHub 账号登录）</li>
+                    <li>如果还没有账号，先注册一个（完全免费）</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- 步骤 2 -->
+        <div class="step">
+            <span class="step-number">2</span>
+            <h2>创建新项目</h2>
+            <div class="step-content">
+                <ol>
+                    <li>登录后，点击右上角的 <strong>"Add New..."</strong></li>
+                    <li>选择 <strong>"Project"</strong></li>
+                    <li>你会看到项目导入页面</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- 步骤 3 -->
+        <div class="step">
+            <span class="step-number">3</span>
+            <h2>上传文件夹</h2>
+            <div class="step-content">
+                <div class="highlight">
+                    <strong>⚠️ 重要：上传整个文件夹，不要单独上传文件！</strong>
+                </div>
+
+                <ol>
+                    <li>找到上传区域（显示 "Import Git Repository" 或类似文字）</li>
+                    <li>向下滚动，找到 <strong>"Upload a file or folder"</strong> 链接</li>
+                    <li>点击后，会打开文件选择窗口</li>
+                </ol>
+
+                <div class="folder-path">
+                    D:\zenithclaw-vercel\
+                </div>
+
+                <ol start="4">
+                    <li>导航到上述路径</li>
+                    <li><strong>选中整个 zenit<hclaw-vercel 文件夹</strong></li>
+                    <li>点击 <strong>"上传"</strong> 或 <strong>"选择文件夹"</strong></li>
+                </ol>
+
+                <div class="success">
+                    <strong>✓ 必须包含的文件：</strong>
+                    <div class="file-list">
+                        <div class="file-item">
+                            <span class="file-name">📄 index.html</span>
+                            <span class="file-size">27.3 KB</span>
+                        </div>
+                        <div class="file-item">
+                            <span class="file-name">🖼️ logo.png</span>
+                            <span class="file-size">246 KB</span>
+                        </div>
+                        <div class="file-item">
+                            <span class="file-name">🖼️ qrcode_inverted.jpg</span>
+                            <span class="file-size">148 KB</span>
+                        </div>
+                        <div class="file-item">
+                            <span class="file-name">⚙️ vercel.json</span>
+                            <span class="file-size">0.15 KB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 步骤 4 -->
+        <div class="step">
+            <span class="step-number">4</span>
+            <h2>配置项目</h2>
+            <div class="step-content">
+                <ol>
+                    <li>上传完成后，你会看到项目配置页面</li>
+                    <li><strong>Project Name:</strong> 输入项目名称（例如：zenithclaw）</li>
+                    <li><strong>Framework Preset:</strong> 选择 "Other" 或 "Static"</li>
+                    <li><strong>Root Directory:</strong> 留空或选择 "./"</li>
+                    <li><strong>Build Command:</strong> 留空（静态网站无需构建）</li>
+                    <li><strong>Output Directory:</strong> 留空或输入 "./"</li>
+                </ol>
+
+                <div class="highlight">
+                    <strong>💡 提示：</strong>大多数情况下，Vercel 会自动检测配置，你只需要点击 "Deploy"
+                </div>
+            </div>
+        </div>
+
+        <!-- 步骤 5 -->
+        <div class="step">
+            <span class="step-number">5</span>
+            <h2>部署项目</h2>
+            <div class="step-content">
+                <ol>
+                    <li>检查所有设置是否正确</li>
+                    <li>点击底部的 <strong>"Deploy"</strong> 按钮</li>
+                    <li>等待部署完成（通常 2-3 分钟）</li>
+                    <li>你会看到部署进度条和日志</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- 步骤 6 -->
+        <div class="step">
+            <span class="step-number">6</span>
+            <h2>访问你的网站</h2>
+            <div class="step-content">
+                <ol>
+                    <li>部署完成后，你会看到成功消息</li>
+                    <li>点击访问链接（类似：<code style="background: #f0f0f0; padding: 5px 10px; border-radius: 4px;">https://zenithclaw.vercel.app</code>）</li>
+                    <li>你的网站现在全球可访问了！🎉</li>
+                </ol>
+
+                <div class="success">
+                    <strong>✅ 部署成功后，图片会自动正常显示！</strong><br>
+                    因为所有文件都已正确上传到 Vercel
+                </div>
+            </div>
+        </div>
+
+        <!-- 故障排除 -->
+        <div class="step">
+            <span class="step-number">!</span>
+            <h2>常见问题</h2>
+            <div class="step-content">
+                <p><strong>Q: 上传后找不到图片文件？</strong></p>
+                <p>A: 确保上传的是整个文件夹，不是单独的文件。在 Vercel Dashboard 的 Files 标签中应该能看到 4 个文件。</p>
+
+                <p><strong>Q: 部署后图片还是不显示？</strong></p>
+                <p>A: 运行 "D:\zenithclaw-vercel\运行修复工具.bat" 然后重新部署。</p>
+
+                <p><strong>Q: 显示 "Build failed" 错误？</strong></p>
+                <p>A: 确保 Root Directory 和 Output Directory 设置正确，或者留空让 Vercel 自动检测。</p>
+            </div>
+        </div>
+
+        <!-- 快速链接 -->
+        <div style="text-align: center; margin-top: 40px;">
+            <h2 style="margin-bottom: 20px;">🚀 开始部署</h2>
+            <a href="https://vercel.com/new" target="_blank" class="btn btn-large">
+                📤 直接前往 Vercel 部署页面
+            </a>
+            <a href="file:///D:/zenithclaw-vercel/index.html" target="_blank" class="btn">
+                👀 本地预览网页
+            </a>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px; color: #666;">
+            <p>💾 需要帮助？查看：<code>D:\zenithclaw-vercel\完整解决指南.txt</code></p>
+            <p style="margin-top: 10px;">预计部署时间：3-5 分钟 | 完全免费 | 全球 CDN</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+{
+  "project": "Zenithclaw",
+  "version": "1.0.0",
+  "description": "Zenithclaw 产品展示网页 - 一键搭建与深度定制",
+  "author": "Zenithclaw Team",
+  "deployed": false,
+  "files": {
+    "index.html": "主网页文件 - 包含所有HTML、CSS、JavaScript",
+    "logo.png": "Zenithclaw Logo - 252KB",
+    "qrcode_inverted.jpg": "联系我们二维码（反色处理）- 152KB",
+    "vercel.json": "Vercel 部署配置"
+  },
+  "features": [
+    "响应式单页滚动设计",
+    "5个完整section页面",
+    "平滑滚动导航",
+    "右侧导航指示器",
+    "动态背景动画",
+    "联系我们弹窗",
+    "能力卡片六边形布局",
+    "3D卡片翻转效果",
+    "消息渠道滚动条"
+  ],
+  "deployment": {
+    "platform": "Vercel",
+    "status": "ready",
+    "commands": {
+      "deploy": "vercel --prod",
+      "preview": "vercel",
+      "login": "vercel login"
+    }
+  },
+  "urls": {
+    "production": "待部署",
+    "preview": "待部署"
+  },
+  "notes": [
+    "所有静态资源已包含",
+    "JavaScript代码完整无缺失",
+    "支持所有现代浏览器",
+    "移动端友好"
+  ]
+}

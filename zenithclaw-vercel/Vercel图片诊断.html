@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vercel 部署图片问题诊断</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #333; margin-bottom: 30px; }
+        h2 { color: #667eea; margin-top: 30px; margin-bottom: 15px; }
+        .checklist {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .check-item {
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #ddd;
+        }
+        .check-item.ok { border-left-color: #28a745; }
+        .check-item.error { border-left-color: #dc3545; }
+        .check-item label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .check-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+        }
+        .solution {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #0066cc;
+        }
+        .solution h3 { margin-top: 0; color: #0066cc; }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            margin: 10px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Vercel 部署图片问题诊断清单</h1>
+
+        <div class="checklist">
+            <h2>✅ 第一步：确认问题</h2>
+
+            <div class="check-item">
+                <label>
+                    <input type="checkbox" onchange="updateStatus()">
+                    我已经在 Vercel 上成功部署了网站
+                </label>
+            </div>
+
+            <div class="check-item">
+                <label>
+                    <input type="checkbox" onchange="updateStatus()">
+                    网页可以正常打开，文字内容显示正常
+                </label>
+            </div>
+
+            <div class="check-item">
+                <label>
+                    <input type="checkbox" onchange="updateStatus()">
+                    Logo 图片不显示（logo.png）
+                </label>
+            </div>
+
+            <div class="check-item">
+                <label>
+                    <input type="checkbox" onchange="updateStatus()">
+                    二维码图片不显示（qrcode_inverted.jpg）
+                </label>
+            </div>
+
+            <div class="check-item">
+                <label>
+                    <input type="checkbox" onchange="updateStatus()">
+                    已经按 Ctrl+Shift+R 强制刷新过
+                </label>
+            </div>
+        </div>
+
+        <div class="checklist">
+            <h2>🔍 第二步：检查 Vercel Dashboard</h2>
+
+            <div class="check-item">
+                <label>
+                    <input type="checkbox" onchange="updateStatus()">
+                    在 Vercel Dashboard 的 Files 标签中看到了 index.html
+                </label>
+            </div>
+
+            <div class="check-item">
+                <label>
+                    <input type="checkbox" onchange="updateStatus()">
+                    在 Vercel Dashboard 的 Files 标签中看到了 logo.png
+                </label>
+            </div>
+
+            <div class="check-item">
+                <label>
+                    <input type="checkbox" onchange="updateStatus()">
+                    在 Vercel Dashboard 的 Files 标签中看到了 qrcode_inverted.jpg
+                </label>
+            </div>
+        </div>
+
+        <div class="solution">
+            <h3>📋 如果图片文件不在 Vercel Dashboard 的 Files 中</h3>
+            <p><strong>问题原因：</strong>图片文件没有被上传到 Vercel</p>
+            <p><strong>解决方法：</strong></p>
+            <ol>
+                <li>确认本地文件夹包含所有文件：
+                    <div class="code">D:\zenithclaw-vercel\
+├── index.html
+├── logo.png
+├── qrcode_inverted.jpg
+└── vercel.json</div>
+                </li>
+                <li>重新上传整个文件夹到 Vercel</li>
+                <li>或在 Git 仓库中确保图片文件已提交</li>
+            </ol>
+        </div>
+
+        <div class="solution">
+            <h3>🌐 如果图片文件在 Vercel Dashboard 中但仍然不显示</h3>
+            <p><strong>可能原因：</strong>文件路径问题</p>
+            <p><strong>解决方法：</strong></p>
+
+            <p><strong>A. 使用绝对路径（推荐）</strong></p>
+            <div class="code">
+修改 index.html：
+
+将 src="logo.png"
+改为 src="/logo.png"
+
+将 src="qrcode_inverted.jpg"
+改为 src="/qrcode_inverted.jpg"
+            </div>
+
+            <p><strong>B. 检查浏览器控制台</strong></p>
+            <ol>
+                <li>打开你的网站</li>
+                <li>按 F12 打开开发者工具</li>
+                <li>切换到 "Console" 标签</li>
+                <li>查找红色错误信息</li>
+                <li>切换到 "Network" 标签</li>
+                <li>刷新页面，查找图片的状态码（200/404）</li>
+            </ol>
+
+            <p><strong>C. 清除 Vercel 缓存</strong></p>
+            <ol>
+                <li>访问 Vercel Dashboard</li>
+                <li>进入你的项目</li>
+                <li>点击 "Settings" → "Functions"</li>
+                <li>滚动到底部，点击 "Clear Cache"</li>
+                <li>重新部署</li>
+            </ol>
+        </div>
+
+        <div class="solution">
+            <h3>🚀 最快速的临时解决方案</h3>
+            <p>使用免费图床托管图片：</p>
+            <ol>
+                <li>访问 <a href="https://imgbb.com" target="_blank">https://imgbb.com</a></li>
+                <li>上传 logo.png 和 qrcode_inverted.jpg</li>
+                <li>获取直链（Direct Link）</li>
+                <li>修改 index.html，替换图片路径：</li>
+            </ol>
+            <div class="code">
+&lt;img src="https://i.ibb.co/xxxxx/logo.png" alt="Zenithclaw Logo"&gt;
+&lt;img src="https://i.ibb.co/xxxxx/qrcode_inverted.jpg" alt="微信二维码"&gt;
+            </div>
+        </div>
+
+        <div class="solution">
+            <h3>📊 常见状态码含义</h3>
+            <ul style="line-height: 2;">
+                <li><strong>200</strong> - ✅ 成功，图片正常加载</li>
+                <li><strong>404</strong> - ❌ 文件未找到，路径错误或文件不存在</li>
+                <li><strong>403</strong> - ❌ 权限问题，无法访问</li>
+                <li><strong>500</strong> - ❌ 服务器错误</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="https://vercel.com/dashboard" target="_blank" class="btn">🔧 打开 Vercel Dashboard</a>
+            <button onclick="window.print()" class="btn">🖨️ 打印此页</button>
+        </div>
+
+        <div id="status" class="status" style="display: none; margin-top: 30px;"></div>
+    </div>
+
+    <script>
+        function updateStatus() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const statusDiv = document.getElementById('status');
+
+            statusDiv.style.display = 'block';
+
+            if (checked === 0) {
+                statusDiv.className = 'status';
+                statusDiv.innerHTML = '⬆️ 请逐项检查';
+            } else if (checked < 5) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = '⚠️ 请完成所有检查项';
+            } else {
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = '✅ 已完成初步检查，请查看下方的解决方案';
+            }
+        }
+
+        // 保存进度到 localStorage
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach((cb, index) => {
+            const saved = localStorage.getItem('check' + index);
+            if (saved === 'true') {
+                cb.checked = true;
+            }
+            cb.addEventListener('change', () => {
+                localStorage.setItem('check' + index, cb.checked);
+                updateStatus();
+            });
+        });
+
+        updateStatus();
+    </script>
+</body>
+</html>

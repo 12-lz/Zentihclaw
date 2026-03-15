@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片测试 - Zenithclaw</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #000;
+            color: #fff;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #4285F4;
+        }
+        .test-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-item h3 {
+            margin-top: 0;
+            color: #9B72CB;
+        }
+        .image-preview {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .status.ok {
+            background: #28a745;
+            color: #fff;
+        }
+        .status.error {
+            background: #dc3545;
+            color: #fff;
+        }
+        .info {
+            background: rgba(66, 133, 244, 0.1);
+            border-left: 4px solid #4285F4;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        code {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ Zenithclaw 图片加载测试</h1>
+
+        <div class="info">
+            <strong>📁 当前目录：</strong><code>D:\zenithclaw-vercel\</code><br>
+            <strong>🔍 测试目的：</strong>验证图片文件是否存在且可以正常加载
+        </div>
+
+        <div class="test-item">
+            <h3>1️⃣ Logo 图片 (logo.png)</h3>
+            <div class="image-preview">
+                <img src="logo.png" alt="Logo" onerror="this.parentElement.innerHTML='<div class=\'status error\'>❌ 加载失败：logo.png</div>'" onload="this.parentElement.innerHTML='<div class=\'status ok\'>✅ 加载成功！</div><img src=\'logo.png\' style=\'max-width:200px\'>">
+            </div>
+            <p><strong>预期大小：</strong>252 KB</p>
+        </div>
+
+        <div class="test-item">
+            <h3>2️⃣ 二维码图片 (qrcode_inverted.jpg)</h3>
+            <div class="image-preview">
+                <img src="qrcode_inverted.jpg" alt="二维码" onerror="this.parentElement.innerHTML='<div class=\'status error\'>❌ 加载失败：qrcode_inverted.jpg</div>'" onload="this.parentElement.innerHTML='<div class=\'status ok\'>✅ 加载成功！</div><img src=\'qrcode_inverted.jpg\' style=\'max-width:200px\'>">
+            </div>
+            <p><strong>预期大小：</strong>152 KB</p>
+        </div>
+
+        <div class="info">
+            <strong>💡 如果图片显示错误：</strong>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+                <li>确认此 HTML 文件在 <code>D:\zenithclaw-vercel\</code> 目录中</li>
+                <li>确认图片文件在同一目录</li>
+                <li>检查文件名是否完全匹配（区分大小写）</li>
+                <li>尝试清除浏览器缓存后刷新</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button onclick="location.reload()" style="padding: 10px 20px; background: #4285F4; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+                🔄 重新测试
+            </button>
+            <button onclick="window.open('index.html')" style="padding: 10px 20px; background: #9B72CB; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-left: 10px;">
+                🌐 打开主网页
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载后显示状态
+        window.onload = function() {
+            console.log('图片测试页面已加载');
+            console.log('当前目录：' + window.location.pathname);
+        }
+    </script>
+</body>
+</html>
